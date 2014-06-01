@@ -2,7 +2,7 @@ import os
 from codecs import open  # To use a consistent encoding
 from setuptools import setup  # Always prefer setuptools over distutils
 
-from . import __author__, __license__, __version__
+from version import __author__, __license__, __version__
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -54,7 +54,7 @@ setup(
     # What does your project relate to?
     keywords='flask celery redis',
 
-    py_modules=['flask_redis'],
+    py_modules=['flask_redis', 'version'],
     zip_safe=False,
 
     # List run-time dependencies here.  These will be installed by pip when your
