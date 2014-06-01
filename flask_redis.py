@@ -82,6 +82,43 @@ def parse_url(url):
     return result
 
 
+def read_config(app, prefix):
+    """Generate a dictionary compatible with StrictRedis.__init__() keyword arguments from data in the Flask
+    application's configuration values relevant to Redis.
+
+    This is where REDIS_URL (or whatever prefix used) is parsed, by calling parse_url().
+
+    Positional arguments:
+    app -- Flask application instance.
+    prefix -- Prefix used in config key names in the Flask app's configuration.
+
+    Returns:
+    Dictionary with parsed data, compatible with StrictRedis.__init__() keyword arguments.
+    """
+    # Get all relevant config values from Flask application.
+    suffixes = ('URL', 'SOCKET', 'HOST', 'PORT', 'PASSWORD', 'DB')
+    config_url, config_socket, config_host, config_port, config_password, config_db = [
+        app.config.get('{}_{}'.format(prefix, suffix)) for suffix in suffixes
+    ]
+    result = dict()
+    # Get more values from URL if provided.
+    if config_url:
+        result.update(parse_url(config_url))
+    # Apply other config values.
+    if config_socket:
+        result['unix_socket_path'] = config_socket
+    else:
+        if config_host:
+            result['host'] = config_host
+        if config_port is not None:
+            result['port'] = int(config_port)
+    if config_password is not None:
+        result['password'] = config_password
+    if config_db is not None:
+        result['db'] = int(config_db)
+    return result
+
+
 class _RedisState(object):
     """Remembers the configuration for the (redis, app) tuple. Modeled from SQLAlchemy."""
 
@@ -108,43 +145,6 @@ class Redis(StrictRedis):
     The above settings names are based on the default config prefix of 'REDIS'. If the config_prefix is 'REDIS_CACHE'
     for example, then REDIS_URL will be REDIS_CACHE_URL, and so on.
     """
-
-    @staticmethod
-    def read_config(app, prefix):
-        """Generate a dictionary compatible with StrictRedis.__init__() keyword arguments from data in the Flask
-        application's configuration values relevant to Redis.
-
-        This is where REDIS_URL (or whatever prefix used) is parsed, by calling parse_url().
-
-        Positional arguments:
-        app -- Flask application instance.
-        prefix -- Prefix used in config key names in the Flask app's configuration.
-
-        Returns:
-        Dictionary with parsed data, compatible with StrictRedis.__init__() keyword arguments.
-        """
-        # Get all relevant config values from Flask application.
-        suffixes = ('URL', 'SOCKET', 'HOST', 'PORT', 'PASSWORD', 'DB')
-        config_url, config_socket, config_host, config_port, config_password, config_db = [
-            app.config.get('{}_{}'.format(prefix, suffix)) for suffix in suffixes
-        ]
-        result = dict()
-        # Get more values from URL if provided.
-        if config_url:
-            result.update(parse_url(config_url))
-        # Apply other config values.
-        if config_socket:
-            result['unix_socket_path'] = config_socket
-        else:
-            if config_host:
-                result['host'] = config_host
-            if config_port is not None:
-                result['port'] = int(config_port)
-        if config_password is not None:
-            result['password'] = config_password
-        if config_db is not None:
-            result['db'] = int(config_db)
-        return result
 
     def __init__(self, app=None, config_prefix=None):
         """If app argument provided then initialize Redis using application config values.
@@ -187,7 +187,7 @@ class Redis(StrictRedis):
         app.extensions[config_prefix.lower()] = _RedisState(self, app)
 
         # Read config.
-        args = self.read_config(app, config_prefix)
+        args = read_config(app, config_prefix)
 
         # Instantiate StrictRedis.
         super(Redis, self).__init__(**args)  # Initialize fully.

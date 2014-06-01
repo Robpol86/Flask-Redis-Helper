@@ -54,7 +54,8 @@ setup(
     # What does your project relate to?
     keywords='flask celery redis',
 
-    py_modules=['flask_redis_helper'],
+    py_modules=['flask_redis'],
+    zip_safe=False,
 
     # List run-time dependencies here.  These will be installed by pip when your
     # project is installed. For an analysis of "install_requires" vs pip's
