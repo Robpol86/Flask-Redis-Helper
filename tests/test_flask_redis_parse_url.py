@@ -1,5 +1,5 @@
 """Test flask_redis_helper.parse_url()."""
-from flask_redis_helper import parse_url
+from flask_redis import parse_url
 
 import pytest
 
