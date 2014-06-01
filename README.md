@@ -7,17 +7,17 @@ the Flask application context the same way SQLAlchemy does.
 Attribution
 -----------
 
-Inspired by [http://pythonhosted.org/Flask-SQLAlchemy/](Flask-SQLAlchemy) and
-[https://github.com/playpauseandstop/Flask-And-Redis](Flask-And-Redis).
+Inspired by [Flask-SQLAlchemy](http://pythonhosted.org/Flask-SQLAlchemy/) and
+[Flask-And-Redis](https://github.com/playpauseandstop/Flask-And-Redis).
 
 Supported Platforms
 -------------------
 
 * OSX and Linux.
 * Python 2.7
-* [http://flask.pocoo.org/](Flask) 0.10.1
-* [http://redis.io/](Redis) 2.9.1
-* [http://www.celeryproject.org/](Celery) 3.1.11
+* [Flask](http://flask.pocoo.org/) 0.10.1
+* [Redis](http://redis.io/) 2.9.1
+* [Celery](http://www.celeryproject.org/) 3.1.11
 
 Probably works on other versions too.
 
