@@ -1,4 +1,4 @@
-"""Test flask_redis_helper.parse_url()."""
+"""Test flask_redis.parse_url()."""
 from flask_redis import parse_url
 
 import pytest

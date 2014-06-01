@@ -2,7 +2,7 @@ import os
 from codecs import open  # To use a consistent encoding
 from setuptools import setup  # Always prefer setuptools over distutils
 
-from flask_redis import __author__, __license__, __version__
+from . import __author__, __license__, __version__
 
 
 here = os.path.abspath(os.path.dirname(__file__))
