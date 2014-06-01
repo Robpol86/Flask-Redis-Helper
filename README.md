@@ -42,16 +42,16 @@ redis = Redis(app)
 Factory Example
 ---------------
 
-extensions.py:
 ```python
+# extensions.py
 from flask.ext.redis import Redis
 
 redis = Redis()
 redis_cache = Redis()
 ```
 
-application.py:
 ```python
+# application.py
 from flask import Flask
 from extensions import redis, redis_cache
 
@@ -64,8 +64,8 @@ def create_app():
     return app
 ```
 
-manage.py:
 ```python
+# manage.py
 from application import create_app
 
 app = create_app()
