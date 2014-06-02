@@ -8,7 +8,10 @@ from urlparse import urlsplit
 
 from redis import StrictRedis
 
-from version import __author__, __license__, __version__
+
+__author__ = '@Robpol86'
+__license__ = 'MIT'
+__version__ = '0.1.0'
 
 
 def parse_url(url):
