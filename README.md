@@ -1,17 +1,25 @@
-Flask-Redis-Helper
-==================
+# Flask-Redis-Helper
 
 Yet another Redis extension for Flask. `Flask-Redis-Helper` doesn't break PyCharm autocomplete/inspections and handles
 the Flask application context the same way SQLAlchemy does.
 
-Attribution
------------
+[![Build Status](https://travis-ci.org/Robpol86/Flask-Redis-Helper.svg?branch=master)]
+(https://travis-ci.org/Robpol86/Flask-Redis-Helper)
+[![Latest Version](https://pypip.in/version/Flask-Redis-Helper/badge.png)]
+(https://pypi.python.org/pypi/Flask-Redis-Helper/)
+[![Downloads](https://pypip.in/download/Flask-Redis-Helper/badge.png)]
+(https://pypi.python.org/pypi/Flask-Redis-Helper/)
+[![Download format](https://pypip.in/format/Flask-Redis-Helper/badge.png)]
+(https://pypi.python.org/pypi/Flask-Redis-Helper/)
+[![License](https://pypip.in/license/Flask-Redis-Helper/badge.png)]
+(https://pypi.python.org/pypi/Flask-Redis-Helper/)
+
+## Attribution
 
 Inspired by [Flask-SQLAlchemy](http://pythonhosted.org/Flask-SQLAlchemy/) and
 [Flask-And-Redis](https://github.com/playpauseandstop/Flask-And-Redis).
 
-Supported Platforms
--------------------
+## Supported Platforms
 
 * OSX and Linux.
 * Python 2.7
@@ -21,8 +29,7 @@ Supported Platforms
 
 Probably works on other versions too.
 
-Quickstart
-----------
+## Quickstart
 
 Install:
 ```bash
@@ -39,8 +46,7 @@ app.config['REDIS_URL'] = 'redis://localhost'
 redis = Redis(app)
 ```
 
-Factory Example
----------------
+## Factory Example
 
 ```python
 # extensions.py
@@ -72,8 +78,7 @@ app = create_app()
 app.run()
 ```
 
-Configuration
--------------
+## Configuration
 
 `Flask-Redis-Helper` subclasses `StrictRedis` and adds the init_app() method for delayed initialization (for 
 applications that instantiate extensions in a separate file, but run init_app() in the same file Flask() was 
@@ -90,3 +95,13 @@ The following config settings are searched for in the Flask application's config
 * `REDIS_PORT` -- TCP port number. Default is 6379.
 * `REDIS_PASSWORD` -- password. Default is None.
 * `REDIS_DB` -- DB instance (e.g. 1). Must be an integer. Default is 0.
+
+## Changelog
+
+#### 0.1.1
+
+* Added Python 2.6 and 3.x support.
+
+#### 0.1.0
+
+* Initial release.

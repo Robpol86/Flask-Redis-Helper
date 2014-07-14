@@ -4,14 +4,17 @@ https://github.com/Robpol86/Flask-Redis-Helper
 https://pypi.python.org/pypi/Flask-Redis-Helper
 """
 import os
-from urlparse import urlsplit
+try:
+    from urlparse import urlsplit
+except ImportError:
+    from urllib.parse import urlsplit  # PY3
 
 from redis import StrictRedis
 
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 def parse_url(url):
@@ -35,7 +38,7 @@ def parse_url(url):
     try:
         split = urlsplit(url)
     except (AttributeError, TypeError) as e:
-        raise ValueError('Malformed URL specified: {}'.format(e))
+        raise ValueError('Malformed URL specified: {0}'.format(e))
     if split.scheme not in ['redis+socket', 'redis', 'file']:
         raise ValueError('Malformed URL specified.')
     scheme = split.scheme
@@ -54,7 +57,7 @@ def parse_url(url):
             result['port'] = port
         if path:
             if not path[1:].isdigit():
-                raise ValueError('Network URL path has non-digit characters: {}'.format(path[1:]))
+                raise ValueError('Network URL path has non-digit characters: {0}'.format(path[1:]))
             result['db'] = int(path[1:])
         return result
 
@@ -62,9 +65,9 @@ def parse_url(url):
     if port:
         raise ValueError('Socket URL looks like non-socket URL.')
     if not password:
-        socket_path = '{}{}'.format(netloc, path)
+        socket_path = '{0}{1}'.format(netloc, path)
     elif netloc.endswith('.'):
-        socket_path = '{}{}'.format(netloc.split('@')[1], path)
+        socket_path = '{0}{1}'.format(netloc.split('@')[1], path)
     elif not path:
         socket_path = netloc.split('@')[1]
     else:
@@ -73,7 +76,7 @@ def parse_url(url):
     # Catch bad paths.
     parent_dir = os.path.split(socket_path)[0]
     if parent_dir and not os.path.isdir(parent_dir):
-        raise ValueError("Unix socket path's parent not a dir: {}".format(parent_dir))
+        raise ValueError("Unix socket path's parent not a dir: {0}".format(parent_dir))
 
     # Finish up.
     result = dict(unix_socket_path=socket_path)
@@ -98,7 +101,7 @@ def read_config(app, prefix):
     # Get all relevant config values from Flask application.
     suffixes = ('URL', 'SOCKET', 'HOST', 'PORT', 'PASSWORD', 'DB')
     config_url, config_socket, config_host, config_port, config_password, config_db = [
-        app.config.get('{}_{}'.format(prefix, suffix)) for suffix in suffixes
+        app.config.get('{0}_{1}'.format(prefix, suffix)) for suffix in suffixes
     ]
     result = dict()
     # Get more values from URL if provided.
