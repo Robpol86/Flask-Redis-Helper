@@ -82,7 +82,7 @@ def parse_url(url):
     return result
 
 
-def read_config(app, prefix):
+def read_config(config, prefix):
     """Return a StrictRedis.__init__() compatible dictionary from data in the Flask config.
 
     Generate a dictionary compatible with StrictRedis.__init__() keyword arguments from data in the Flask
@@ -91,7 +91,7 @@ def read_config(app, prefix):
     This is where REDIS_URL (or whatever prefix used) is parsed, by calling parse_url().
 
     Positional arguments:
-    app -- Flask application instance.
+    config -- Flask application config dict.
     prefix -- Prefix used in config key names in the Flask app's configuration.
 
     Returns:
@@ -100,7 +100,7 @@ def read_config(app, prefix):
     # Get all relevant config values from Flask application.
     suffixes = ('URL', 'SOCKET', 'HOST', 'PORT', 'PASSWORD', 'DB')
     config_url, config_socket, config_host, config_port, config_password, config_db = [
-        app.config.get('{0}_{1}'.format(prefix, suffix)) for suffix in suffixes
+        config.get('{0}_{1}'.format(prefix, suffix)) for suffix in suffixes
     ]
     result = dict()
     # Get more values from URL if provided.
@@ -188,7 +188,7 @@ class Redis(StrictRedis):
         app.extensions[config_prefix.lower()] = _RedisState(self, app)
 
         # Read config.
-        args = read_config(app, config_prefix)
+        args = read_config(app.config, config_prefix)
 
         # Instantiate StrictRedis.
         super(Redis, self).__init__(**args)  # Initialize fully.

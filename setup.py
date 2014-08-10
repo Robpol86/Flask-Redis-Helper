@@ -70,6 +70,24 @@ class PyTestCovWeb(PyTest):
         PyTest.run_tests(self)
 
 
+class CmdFlake(setuptools.Command):
+    user_options = []
+    CMD_ARGS = ['flake8', '-v', '--max-line-length', '120', '--statistics', '.']
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        subprocess.call(self.CMD_ARGS)
+
+
+class CmdLint(CmdFlake):
+    CMD_ARGS = ['pylint', '--max-line-length', '120', 'flask_redis.py']
+
+
 # Setup definition.
 setuptools.setup(
     name='Flask-Redis-Helper',
@@ -120,7 +138,8 @@ setuptools.setup(
     install_requires=['Flask', 'redis', 'six'],
 
     tests_require=['pytest'],
-    cmdclass=dict(test=PyTest, testpdb=PyTestPdb, testcov=PyTestCov, testcovweb=PyTestCovWeb),
+    cmdclass=dict(test=PyTest, testpdb=PyTestPdb, testcov=PyTestCov, testcovweb=PyTestCovWeb, style=CmdFlake,
+                  lint=CmdLint),
 
     # Pass the rest from get_metadata().
     **get_metadata(os.path.join('flask_redis.py'))
