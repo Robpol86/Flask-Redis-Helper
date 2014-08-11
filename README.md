@@ -5,6 +5,8 @@ the Flask application context the same way SQLAlchemy does.
 
 [![Build Status](https://travis-ci.org/Robpol86/Flask-Redis-Helper.svg?branch=master)]
 (https://travis-ci.org/Robpol86/Flask-Redis-Helper)
+[![Coverage Status](https://img.shields.io/coveralls/Robpol86/Flask-Redis-Helper.svg)]
+(https://coveralls.io/r/Robpol86/Flask-Redis-Helper)
 [![Latest Version](https://pypip.in/version/Flask-Redis-Helper/badge.png)]
 (https://pypi.python.org/pypi/Flask-Redis-Helper/)
 [![Downloads](https://pypip.in/download/Flask-Redis-Helper/badge.png)]
