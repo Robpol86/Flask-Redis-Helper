@@ -9,4 +9,8 @@ python:
 
 install: 'pip install .'
 
+before_script: 'pip install python-coveralls'
+
 script: 'python setup.py test'
+
+after_success: 'coveralls'

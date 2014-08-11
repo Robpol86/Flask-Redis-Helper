@@ -5,6 +5,8 @@ the Flask application context the same way SQLAlchemy does.
 
 [![Build Status](https://travis-ci.org/Robpol86/Flask-Redis-Helper.svg?branch=master)]
 (https://travis-ci.org/Robpol86/Flask-Redis-Helper)
+[![Coverage Status](https://img.shields.io/coveralls/Robpol86/Flask-Redis-Helper.svg)]
+(https://coveralls.io/r/Robpol86/Flask-Redis-Helper)
 [![Latest Version](https://pypip.in/version/Flask-Redis-Helper/badge.png)]
 (https://pypi.python.org/pypi/Flask-Redis-Helper/)
 [![Downloads](https://pypip.in/download/Flask-Redis-Helper/badge.png)]
@@ -22,12 +24,10 @@ Inspired by [Flask-SQLAlchemy](http://pythonhosted.org/Flask-SQLAlchemy/) and
 ## Supported Platforms
 
 * OSX and Linux.
-* Python 2.7
+* Python 2.6, 2.7, 3.3, 3.4
 * [Flask](http://flask.pocoo.org/) 0.10.1
 * [Redis](http://redis.io/) 2.9.1
 * [Celery](http://www.celeryproject.org/) 3.1.11
-
-Probably works on other versions too.
 
 ## Quickstart
 
@@ -97,6 +97,10 @@ The following config settings are searched for in the Flask application's config
 * `REDIS_DB` -- DB instance (e.g. 1). Must be an integer. Default is 0.
 
 ## Changelog
+
+#### 0.1.2
+
+* Minor code restructuring.
 
 #### 0.1.1
 
