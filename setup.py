@@ -39,7 +39,7 @@ def get_metadata(main_file):
 
 
 class PyTest(test):
-    TEST_ARGS = ['tests']
+    TEST_ARGS = ['--cov-report', 'term-missing', '--cov', 'flask_redis', 'tests']
 
     def finalize_options(self):
         test.finalize_options(self)
@@ -55,10 +55,6 @@ class PyTest(test):
 
 class PyTestPdb(PyTest):
     TEST_ARGS = ['--pdb', 'tests']
-
-
-class PyTestCov(PyTest):
-    TEST_ARGS = ['--cov', 'flask_redis', 'tests']
 
 
 class PyTestCovWeb(PyTest):
@@ -137,9 +133,8 @@ setuptools.setup(
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['Flask', 'redis', 'six'],
 
-    tests_require=['pytest'],
-    cmdclass=dict(test=PyTest, testpdb=PyTestPdb, testcov=PyTestCov, testcovweb=PyTestCovWeb, style=CmdFlake,
-                  lint=CmdLint),
+    tests_require=['pytest', 'pytest-cov'],
+    cmdclass=dict(test=PyTest, testpdb=PyTestPdb, testcovweb=PyTestCovWeb, style=CmdFlake, lint=CmdLint),
 
     # Pass the rest from get_metadata().
     **get_metadata(os.path.join('flask_redis.py'))
