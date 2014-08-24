@@ -33,7 +33,7 @@ def parse_url(url):
     """
     # Parse URL, make sure string is valid.
     try:
-        split = moves.urllib.parse.urlsplit(url)
+        split = moves.urllib.parse.urlsplit(url.rstrip('/'))
     except (AttributeError, TypeError) as e:
         raise ValueError('Malformed URL specified: {0}'.format(e))
     if split.scheme not in ['redis+socket', 'redis', 'file']:

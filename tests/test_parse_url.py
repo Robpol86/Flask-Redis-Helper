@@ -101,5 +101,8 @@ def test_network_urls():
     actual = parse_url('redis://localhost/2')
     assert dict(host='localhost', db=2) == actual
 
+    actual = parse_url('redis://localhost/')
+    assert dict(host='localhost') == actual
+
     actual = parse_url('redis://localhost')
     assert dict(host='localhost') == actual
