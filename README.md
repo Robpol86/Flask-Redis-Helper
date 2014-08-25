@@ -98,6 +98,10 @@ The following config settings are searched for in the Flask application's config
 
 ## Changelog
 
+#### 0.1.3
+
+* Support trailing slashes.
+
 #### 0.1.2
 
 * Minor code restructuring.
