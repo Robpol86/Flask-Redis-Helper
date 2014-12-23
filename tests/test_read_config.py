@@ -2,7 +2,7 @@ import os
 
 from flask.ext.redis import read_config
 
-TMP_DIR = 'C:/Windows/Temp' if os.name == 'nt' else '/tmp'
+SOCK_FILE_PATH = 'C:\\Windows\\Temp\\file.sock' if os.name == 'nt' else '/tmp/file.sock'
 
 
 def test_url():
@@ -13,12 +13,12 @@ def test_url():
 
 
 def test_socket():
-    config = dict(REDIS_URL='redis+socket://{0}/file.sock'.format(TMP_DIR))
-    expected = dict(unix_socket_path='{0}/file.sock'.format(TMP_DIR))
+    config = dict(REDIS_URL='redis+socket://{0}'.format(SOCK_FILE_PATH))
+    expected = dict(unix_socket_path=SOCK_FILE_PATH)
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
-    config = dict(REDIS_SOCKET='{0}/file.sock'.format(TMP_DIR))
+    config = dict(REDIS_SOCKET=SOCK_FILE_PATH)
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
@@ -36,26 +36,26 @@ def test_hybrid():
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
-    config = dict(REDIS_URL='redis+socket://{0}/file.sock'.format(TMP_DIR), REDIS_DB=3)
-    expected = dict(unix_socket_path='{0}/file.sock'.format(TMP_DIR), db=3)
+    config = dict(REDIS_URL='redis+socket://{0}'.format(SOCK_FILE_PATH), REDIS_DB=3)
+    expected = dict(unix_socket_path=SOCK_FILE_PATH, db=3)
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
-    config = dict(REDIS_SOCKET='{0}/file.sock'.format(TMP_DIR), REDIS_DB=3)
+    config = dict(REDIS_SOCKET=SOCK_FILE_PATH, REDIS_DB=3)
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
 
 def test_prefix():
-    config = dict(REDIS_SOCKET='{0}/file.sock'.format(TMP_DIR), REDIS_DB=3,
-                  REDIS2_SOCKET='{0}/file.sock'.format(TMP_DIR), REDIS2_DB=1, REDIS3_URL='redis://localhost',
+    config = dict(REDIS_SOCKET=SOCK_FILE_PATH, REDIS_DB=3,
+                  REDIS2_SOCKET=SOCK_FILE_PATH, REDIS2_DB=1, REDIS3_URL='redis://localhost',
                   REDIS3_PASSWORD='P@ssWord')
 
-    expected = dict(unix_socket_path='{0}/file.sock'.format(TMP_DIR), db=3)
+    expected = dict(unix_socket_path=SOCK_FILE_PATH, db=3)
     actual = read_config(config, 'REDIS')
     assert expected == actual
 
-    expected = dict(unix_socket_path='{0}/file.sock'.format(TMP_DIR), db=1)
+    expected = dict(unix_socket_path=SOCK_FILE_PATH, db=1)
     actual = read_config(config, 'REDIS2')
     assert expected == actual
 

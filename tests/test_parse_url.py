@@ -4,87 +4,15 @@ from flask_redis import parse_url
 
 import pytest
 
-TMP_DIR = 'C:/Windows/Temp' if os.name == 'nt' else '/tmp'
-
 
 def test_bad_urls():
     """Make sure bad URLs raise ValueError."""
-    urls = [None, [1, 2, 3], 'efesfesf', '://localhost', 'http://google.com', '{0}/dne/redis.sock'.format(TMP_DIR),
-            'redis://localhost/test', 'file://localhost/0', 'redis+socket://username:password@localhost:6379/0']
+    urls = [None, [1, 2, 3], 'efesfesf', '://localhost', 'http://google.com', '/tmp/dne/redis.sock',
+            'C:\\DNE\\redis.sock', 'redis://localhost/test', 'file://localhost/0',
+            'redis+socket://username:password@localhost:6379/0']
     for url in urls:
         with pytest.raises(ValueError):
             parse_url(url)
-
-
-def test_socket_paths():
-    """Test various socket paths work."""
-    actual = parse_url('file://user:pass@redis.sock')
-    assert dict(password='pass', unix_socket_path='redis.sock') == actual
-
-    actual = parse_url('file://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
-    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
-
-    actual = parse_url('file://user:pass@../redis.sock')
-    assert dict(password='pass', unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('file://user:pass@./redis.sock')
-    assert dict(password='pass', unix_socket_path='./redis.sock') == actual
-
-    actual = parse_url('file://redis.SOCK')
-    assert dict(unix_socket_path='redis.SOCK') == actual
-
-    actual = parse_url('file://{0}/redis.sock'.format(TMP_DIR))
-    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
-
-    actual = parse_url('file://../redis.sock')
-    assert dict(unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('file://./redis.SOCK')
-    assert dict(unix_socket_path='./redis.SOCK') == actual
-
-    # Duplicate tests for redis+socket:// scheme.
-    actual = parse_url('redis+socket://user:pass@redis.sock')
-    assert dict(password='pass', unix_socket_path='redis.sock') == actual
-
-    actual = parse_url('redis+socket://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
-    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
-
-    actual = parse_url('redis+socket://user:pass@../redis.sock')
-    assert dict(password='pass', unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('redis+socket://user:pass@./redis.sock')
-    assert dict(password='pass', unix_socket_path='./redis.sock') == actual
-
-    actual = parse_url('redis+socket://redis.SOCK')
-    assert dict(unix_socket_path='redis.SOCK') == actual
-
-    actual = parse_url('redis+socket://{0}/redis.sock'.format(TMP_DIR))
-    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
-
-    actual = parse_url('redis+socket://../redis.sock')
-    assert dict(unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('redis+socket://./redis.SOCK')
-    assert dict(unix_socket_path='./redis.SOCK') == actual
-
-    # Test implicit.
-    actual = parse_url('redis://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
-    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
-
-    actual = parse_url('redis://user:pass@../redis.sock')
-    assert dict(password='pass', unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('redis://user:pass@./redis.sock')
-    assert dict(password='pass', unix_socket_path='./redis.sock') == actual
-
-    actual = parse_url('redis://{0}/redis.sock'.format(TMP_DIR))
-    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
-
-    actual = parse_url('redis://../redis.sock')
-    assert dict(unix_socket_path='../redis.sock') == actual
-
-    actual = parse_url('redis://./redis.SOCK')
-    assert dict(unix_socket_path='./redis.SOCK') == actual
 
 
 def test_network_urls():
@@ -109,3 +37,60 @@ def test_network_urls():
 
     actual = parse_url('redis://localhost')
     assert dict(host='localhost') == actual
+
+
+def test_socket_paths_implicit():
+    actual = parse_url('redis://user:pass@../redis.sock')
+    assert dict(password='pass', unix_socket_path='../redis.sock') == actual
+
+    actual = parse_url('redis://user:pass@./redis.sock')
+    assert dict(password='pass', unix_socket_path='./redis.sock') == actual
+
+    actual = parse_url('redis://../redis.sock')
+    assert dict(unix_socket_path='../redis.sock') == actual
+
+    actual = parse_url('redis://./redis.SOCK')
+    assert dict(unix_socket_path='./redis.SOCK') == actual
+
+    if os.name != 'nt':
+        actual = parse_url('redis://user:pass@/tmp/redis.SOCK')
+        assert dict(password='pass', unix_socket_path='/tmp/redis.SOCK') == actual
+        actual = parse_url('redis:///tmp/redis.sock')
+        assert dict(unix_socket_path='/tmp/redis.sock') == actual
+    else:
+        actual = parse_url('redis://user:pass@C:\\Windows\\Temp\\redis.SOCK')
+        assert dict(password='pass', unix_socket_path='C:\\Windows\\Temp\\redis.SOCK') == actual
+        actual = parse_url('redis://C:\\Windows\\Temp\\redis.sock')
+        assert dict(unix_socket_path='C:\\Windows\\Temp\\redis.sock') == actual
+
+
+@pytest.mark.parametrize('prefix', ('file', 'redis+socket'))
+def test_socket_paths_explicit(prefix):
+    actual = parse_url(prefix + '://user:pass@redis.sock')
+    assert dict(password='pass', unix_socket_path='redis.sock') == actual
+
+    actual = parse_url(prefix + '://user:pass@../redis.sock')
+    assert dict(password='pass', unix_socket_path='../redis.sock') == actual
+
+    actual = parse_url(prefix + '://user:pass@./redis.sock')
+    assert dict(password='pass', unix_socket_path='./redis.sock') == actual
+
+    actual = parse_url(prefix + '://redis.SOCK')
+    assert dict(unix_socket_path='redis.SOCK') == actual
+
+    actual = parse_url(prefix + '://../redis.sock')
+    assert dict(unix_socket_path='../redis.sock') == actual
+
+    actual = parse_url(prefix + '://./redis.SOCK')
+    assert dict(unix_socket_path='./redis.SOCK') == actual
+
+    if os.name != 'nt':
+        actual = parse_url(prefix + '://user:pass@/tmp/redis.SOCK')
+        assert dict(password='pass', unix_socket_path='/tmp/redis.SOCK') == actual
+        actual = parse_url(prefix + ':///tmp/redis.sock')
+        assert dict(unix_socket_path='/tmp/redis.sock') == actual
+    else:
+        actual = parse_url(prefix + '://user:pass@C:\\Windows\\Temp\\redis.SOCK')
+        assert dict(password='pass', unix_socket_path='C:\\Windows\\Temp\\redis.SOCK') == actual
+        actual = parse_url(prefix + '://C:\\Windows\\Temp\\redis.sock')
+        assert dict(unix_socket_path='C:\\Windows\\Temp\\redis.sock') == actual
