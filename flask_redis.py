@@ -47,7 +47,20 @@ def parse_url(url):
     hostname = split.hostname
     path = split.path
     password = split.password
-    port = split.port
+    try:
+        port = split.port
+    except ValueError:
+        port = None  # Stupid urlsplit bug on Windows.
+
+    # urlsplit sucks on Windows, work around this.
+    if os.name == 'nt' and not path and '\\' in netloc:
+        if '@' in netloc:
+            position = netloc.find('@') + 1
+            path = netloc[position:]
+            netloc = netloc[:position]
+        else:
+            path = netloc
+            netloc = ''
 
     # Handle non-socket URLs.
     if scheme == 'redis' and netloc and not netloc.endswith('.') and not netloc.endswith('@'):
