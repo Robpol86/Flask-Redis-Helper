@@ -122,6 +122,12 @@ The following config settings are searched for in the Flask application's config
 Changelog
 ---------
 
+1.0.0
+`````
+
+* Windows support.
+* Removed dependency on ``six``.
+
 0.1.3
 `````
 

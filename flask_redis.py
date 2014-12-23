@@ -6,12 +6,16 @@ https://pypi.python.org/pypi/Flask-Redis-Helper
 
 import os
 
-from six import moves
+try:
+    from urlparse import urlsplit
+except ImportError:
+    from urllib.parse import urlsplit
+
 from redis import StrictRedis
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
-__version__ = '0.1.3'
+__version__ = '1.0.0'
 
 
 def parse_url(url):
@@ -33,7 +37,7 @@ def parse_url(url):
     """
     # Parse URL, make sure string is valid.
     try:
-        split = moves.urllib.parse.urlsplit(url.rstrip('/'))
+        split = urlsplit(url.rstrip('/'))
     except (AttributeError, TypeError) as e:
         raise ValueError('Malformed URL specified: {0}'.format(e))
     if split.scheme not in ['redis+socket', 'redis', 'file']:

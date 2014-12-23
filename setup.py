@@ -17,7 +17,7 @@ KEYWORDS = 'flask celery redis'
 NAME = 'Flask-Redis-Helper'
 NAME_FILE = 'flask_redis'
 PACKAGE = False
-REQUIRES_INSTALL = ['Flask', 'redis', 'six']
+REQUIRES_INSTALL = ['Flask', 'redis']
 REQUIRES_TEST = ['pytest-cov']
 REQUIRES_PIP = '"' + '" "'.join(set(REQUIRES_INSTALL + REQUIRES_TEST)) + '"'
 

@@ -1,12 +1,15 @@
-"""Test flask_redis.parse_url()."""
+import os
+
 from flask_redis import parse_url
 
 import pytest
 
+TMP_DIR = 'C:/Windows/Temp' if os.name == 'nt' else '/tmp'
+
 
 def test_bad_urls():
     """Make sure bad URLs raise ValueError."""
-    urls = [None, [1, 2, 3], 'efesfesf', '://localhost', 'http://google.com', '/tmp/dne/redis.sock',
+    urls = [None, [1, 2, 3], 'efesfesf', '://localhost', 'http://google.com', '{0}/dne/redis.sock'.format(TMP_DIR),
             'redis://localhost/test', 'file://localhost/0', 'redis+socket://username:password@localhost:6379/0']
     for url in urls:
         with pytest.raises(ValueError):
@@ -18,8 +21,8 @@ def test_socket_paths():
     actual = parse_url('file://user:pass@redis.sock')
     assert dict(password='pass', unix_socket_path='redis.sock') == actual
 
-    actual = parse_url('file://user:pass@/tmp/redis.SOCK')
-    assert dict(password='pass', unix_socket_path='/tmp/redis.SOCK') == actual
+    actual = parse_url('file://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
+    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
 
     actual = parse_url('file://user:pass@../redis.sock')
     assert dict(password='pass', unix_socket_path='../redis.sock') == actual
@@ -30,8 +33,8 @@ def test_socket_paths():
     actual = parse_url('file://redis.SOCK')
     assert dict(unix_socket_path='redis.SOCK') == actual
 
-    actual = parse_url('file:///tmp/redis.sock')
-    assert dict(unix_socket_path='/tmp/redis.sock') == actual
+    actual = parse_url('file://{0}/redis.sock'.format(TMP_DIR))
+    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
 
     actual = parse_url('file://../redis.sock')
     assert dict(unix_socket_path='../redis.sock') == actual
@@ -43,8 +46,8 @@ def test_socket_paths():
     actual = parse_url('redis+socket://user:pass@redis.sock')
     assert dict(password='pass', unix_socket_path='redis.sock') == actual
 
-    actual = parse_url('redis+socket://user:pass@/tmp/redis.SOCK')
-    assert dict(password='pass', unix_socket_path='/tmp/redis.SOCK') == actual
+    actual = parse_url('redis+socket://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
+    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
 
     actual = parse_url('redis+socket://user:pass@../redis.sock')
     assert dict(password='pass', unix_socket_path='../redis.sock') == actual
@@ -55,8 +58,8 @@ def test_socket_paths():
     actual = parse_url('redis+socket://redis.SOCK')
     assert dict(unix_socket_path='redis.SOCK') == actual
 
-    actual = parse_url('redis+socket:///tmp/redis.sock')
-    assert dict(unix_socket_path='/tmp/redis.sock') == actual
+    actual = parse_url('redis+socket://{0}/redis.sock'.format(TMP_DIR))
+    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
 
     actual = parse_url('redis+socket://../redis.sock')
     assert dict(unix_socket_path='../redis.sock') == actual
@@ -65,8 +68,8 @@ def test_socket_paths():
     assert dict(unix_socket_path='./redis.SOCK') == actual
 
     # Test implicit.
-    actual = parse_url('redis://user:pass@/tmp/redis.SOCK')
-    assert dict(password='pass', unix_socket_path='/tmp/redis.SOCK') == actual
+    actual = parse_url('redis://user:pass@{0}/redis.SOCK'.format(TMP_DIR))
+    assert dict(password='pass', unix_socket_path='{0}/redis.SOCK'.format(TMP_DIR)) == actual
 
     actual = parse_url('redis://user:pass@../redis.sock')
     assert dict(password='pass', unix_socket_path='../redis.sock') == actual
@@ -74,8 +77,8 @@ def test_socket_paths():
     actual = parse_url('redis://user:pass@./redis.sock')
     assert dict(password='pass', unix_socket_path='./redis.sock') == actual
 
-    actual = parse_url('redis:///tmp/redis.sock')
-    assert dict(unix_socket_path='/tmp/redis.sock') == actual
+    actual = parse_url('redis://{0}/redis.sock'.format(TMP_DIR))
+    assert dict(unix_socket_path='{0}/redis.sock'.format(TMP_DIR)) == actual
 
     actual = parse_url('redis://../redis.sock')
     assert dict(unix_socket_path='../redis.sock') == actual
