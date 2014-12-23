@@ -108,11 +108,13 @@ applications that instantiate extensions in a separate file, but run init_app() 
 instantiated).
 
 The following config settings are searched for in the Flask application's configuration dictionary:
+
 * ``REDIS_URL`` -- URL to Redis server. May be a network URL or Unix socket URL. Individual components may be overridden
   by settings below (like setting REDIS_DB). URLs must start with redis://, file://, or redis+socket:// (Celery
   compatibility). redis:// handles ambiguous URLs (like redis://localhost and redis://my_socket_file) by
   prioritizing network URL interpretations over socket URLs. Use the file:// or redis+socket:// URL schemes to
   force socket URL interpretations over network URLs.
+
 * ``REDIS_SOCKET`` -- UNIX socket file path. If specified, disables REDIS_HOST and REDIS_PORT settings.
 * ``REDIS_HOST`` -- the Redis server's hostname/IP. Default is localhost.
 * ``REDIS_PORT`` -- TCP port number. Default is 6379.
