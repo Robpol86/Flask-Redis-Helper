@@ -1,18 +1,12 @@
 language: python
 
-python:
-  - 2.6
-  - 2.7
-  - pypy
-  - 3.3
-  - 3.4
-
 install:
-  - python -c 'import setup; print(setup.REQUIRES_PIP)' |xargs pip install
-  - pip install robpol86-codecov
-  - pip install .
+  - pip install codecov tox
 
 script:
-  - python setup.py test
+  - tox
+  - tox -e combine py34 py33 pypy3 pypy py27 py26
 
-after_success: codecov
+after_success:
+  - mv tests/.coverage .
+  - codecov || true

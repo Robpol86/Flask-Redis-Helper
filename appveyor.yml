@@ -1,31 +1,21 @@
 environment:
   CODECOV_TOKEN:
     secure: nJk4lUpIm/iJ6KAgNFg8na77GFTHpBEO/nGH8hvUaHRwUXmvWi+SPJcP4Wd3pw2x
-  PYTHONIOENCODING: utf-8
-
-  matrix:
-    - PYTHON: C:\Python27
-    - PYTHON: C:\Python27-x64
-    - PYTHON: C:\Python33
-    - PYTHON: C:\Python33-x64
-    - PYTHON: C:\Python34
-    - PYTHON: C:\Python34-x64
 
 init:
-  - IF DEFINED PYTHON set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - set PATH=C:\Python34-x64;C:\Python34-x64\Scripts;%PATH%
 
 install:
   - ps: Start-FileDownload https://raw.github.com/pypa/pip/master/contrib/get-pip.py
   - python get-pip.py
-  - ps: pip install $(python -c 'import setup; print(setup.REQUIRES_PIP)')
-  - pip install robpol86-codecov
 
 build_script:
-  - ps: mv .git ..
-  - pip install .
-  - ps: mv ..\.git .
+  - pip install codecov tox
 
 test_script:
-  - python setup.py test
+  - tox
+  - tox -e combine py34x64 py34 py33x64 py33 py27x64 py27
 
-after_test: codecov
+after_test:
+  - mv tests/.coverage .
+  - codecov || exit /B 0
